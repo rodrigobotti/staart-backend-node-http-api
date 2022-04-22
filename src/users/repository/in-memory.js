@@ -1,12 +1,19 @@
-const { NotFoundError } = require('../../errors')
+const { NotFoundError, ConflictError } = require('../../errors')
 const { wait } = require('../../utils')
 
 const InMemoryUsersRepository = () => {
   let idSequence = 1
   const users = {}
 
+  const findByUsername = username =>
+    Object.values(users).find((user) => user.username === username)
+
   const insert = async (user) => {
     await wait(500)
+    // simular algo similar a `unique constraint violation`
+    if (findByUsername(user.username)) {
+      return Promise.reject(new ConflictError(`User with username '${user.username}' already registered`))
+    }
     const id = idSequence++
     const data = { ...user, id }
     users[id] = data

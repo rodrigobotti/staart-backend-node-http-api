@@ -20,7 +20,11 @@ class ValidationError extends DomainError {
   }
 }
 
+class ConflictError extends DomainError {
+}
+
 module.exports = {
   NotFoundError,
   ValidationError,
+  ConflictError,
 }
