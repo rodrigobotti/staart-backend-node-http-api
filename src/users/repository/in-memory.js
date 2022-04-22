@@ -1,3 +1,4 @@
+const { NotFoundError } = require('../../errors')
 const { wait } = require('../../utils')
 
 const InMemoryUsersRepository = () => {
@@ -19,7 +20,8 @@ const InMemoryUsersRepository = () => {
 
   const get = async (id) => {
     await wait(100)
-    return users[id]
+    const user = users[id]
+    return user ?? Promise.reject(new NotFoundError({ resourceName: 'user', resourceId: id }))
   }
 
   const update = async (user) => {
