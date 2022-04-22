@@ -3,27 +3,25 @@ const express = require('express')
 // middlewares
 const error = require('./middlewares/error')
 const logger = require('./middlewares/logger')
+const defaultHandler = require('./middlewares/default')
 
 // routes
 const todos = require('./todos/routes')
 const hello = require('./hello/routes')
+const users = require('./users/routes')
 
 const app = express()
+const router = express.Router()
 
-app.use(express.json())
-app.use(logger())
-app.use('/hello', hello)
-app.use('/todos', todos)
+router.use(express.json())
+router.use(logger())
+router.use('/hello', hello)
+router.use('/todos', todos)
+router.use('/users', users)
+router.use(defaultHandler)
+router.use(error())
 
-app.get('/error', (_req, _res) =>
-  Promise.reject(Error('async'))
-)
-app.get('/error/sync', (_req, _res) => {
-  throw Error('sync')
-})
-
-app.use(error())
-
+app.use('/api', router)
 
 app
   .listen(3000, '0.0.0.0', () => {
