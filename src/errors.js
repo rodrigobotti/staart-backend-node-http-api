@@ -14,9 +14,9 @@ class NotFoundError extends DomainError {
 }
 
 class ValidationError extends DomainError {
-  constructor({ message = 'Invalid parameters', cause }) {
+  constructor({ message = 'Invalid parameters', validations }) {
     super(message)
-    this.cause = cause
+    this.validations = validations
   }
 }
 

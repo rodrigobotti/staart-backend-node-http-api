@@ -1,4 +1,7 @@
-const { NotFoundError } = require("../errors")
+const { NotFoundError, ValidationError } = require("../errors")
+
+const validationsToCause = validations =>
+  validations.map(({ message, context: { label } }) => ({ message, field: label }))
 
 const responseMappers = {
   [NotFoundError.name]: (error) => ({
@@ -7,7 +10,16 @@ const responseMappers = {
       statusCode: 404,
       error: NotFoundError.name,
       message: error.message,
-      cause: []
+      cause: [],
+    }
+  }),
+  [ValidationError.name]: (error) => ({
+    status: 400,
+    body: {
+      statusCode: 400,
+      error: ValidationError.name,
+      message: error.message,
+      cause: validationsToCause(error.validations ?? [])
     }
   }),
   default: (error) => ({
