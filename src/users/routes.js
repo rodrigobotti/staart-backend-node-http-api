@@ -1,5 +1,7 @@
 const { Router } = require('express')
 
+const withAsyncErrorHandler = require('../middlewares/async-error')
+
 const router = Router()
 
 /*
@@ -10,27 +12,49 @@ const router = Router()
   - D: delete
 */
 
-// create
-router.post('/', async (req, res) => {
+// ************
+// ** create **
+// ************
+
+const createUser = async (req, res) => {
   res.status(201).header('Location', '/users/???').send()
-})
+}
 
-// update
-router.put('/:id', async (req, res) => {
+router.post('/', withAsyncErrorHandler(createUser))
+
+// ************
+// ** update **
+// ************
+
+const updateUser = async (req, res) => {
   res.status(200).send()
-})
+}
 
-// delete
-router.delete('/:id', async (req, res) => {
+router.put('/:id', withAsyncErrorHandler(updateUser))
+
+// ************
+// ** delete **
+// ************
+
+const deleteUser = async (req, res) => {
   res.status(204).send()
-})
+}
 
-// read
-router.get('/', async (req, res) => {
+router.delete('/:id', withAsyncErrorHandler(deleteUser))
+
+// **********
+// ** read **
+// **********
+
+const listUsers = async (req, res) => {
   res.status(200).send({ users: [] })
-})
-router.get('/:id', async (req, res) => {
+}
+
+const getUser = async (req, res) => {
   res.status(200).send({ })
-})
+}
+
+router.get('/', withAsyncErrorHandler(listUsers))
+router.get('/:id', withAsyncErrorHandler(getUser))
 
 module.exports = router
