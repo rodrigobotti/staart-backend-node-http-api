@@ -4,10 +4,11 @@ const Joi = require('joi')
 const withAsyncErrorHandler = require('../middlewares/async-error')
 const validate = require('../middlewares/validate')
 
-const router = Router()
-
 const { UsersRepository } = require('./repository')
 
+const NameRegex = /^[A-Z][a-z]+$/
+
+const router = Router()
 const repository = UsersRepository()
 
 /*
@@ -26,13 +27,13 @@ const CreateUserBodySchema = {
   body: Joi.object({
     username: Joi.string().email().required(),
     password: Joi.string().min(5).max(40).required(),
-    name: Joi.string().regex(/^[A-Za-z]+(\s?[A-Za-z])*$/).required()
+    firstName: Joi.string().regex(NameRegex).required(),
+    lastName: Joi.string().regex(NameRegex).required(),
   })
 }
 
 const createUser = async (req, res) => {
   const user = req.body
-  // e se já existir com email cadastrado ?
   const inserted = await repository.insert(user)
   const location = `/api/users/${inserted.id}`
   res.status(201).header('Location', location).send(inserted)
@@ -49,9 +50,10 @@ const UpdateUserSchema = {
     id: Joi.number().required(),
   }),
   body: Joi.object({
-    password: Joi.string().min(10).max(40),
-    name: Joi.string().regex(/^[A-Za-z]+(\s?[A-Za-z])*$/)
-  }).or('password', 'name')
+    password: Joi.string().min(5).max(40),
+    firstName: Joi.string().regex(NameRegex),
+    lastName: Joi.string().regex(NameRegex),
+  }).or('password', 'firstName', 'lastName')
 }
 
 const updateUser = async (req, res) => {
