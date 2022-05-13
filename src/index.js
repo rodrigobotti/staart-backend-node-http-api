@@ -4,6 +4,7 @@ const express = require('express')
 const error = require('./middlewares/error')
 const logger = require('./middlewares/logger')
 const defaultHandler = require('./middlewares/default')
+const docs = require('./middlewares/docs')
 
 // routes
 const todos = require('./todos/routes')
@@ -22,6 +23,7 @@ router.use(defaultHandler)
 router.use(error())
 
 app.use('/api', router)
+app.use('/docs', docs)
 
 app
   .listen(3000, '0.0.0.0', () => {

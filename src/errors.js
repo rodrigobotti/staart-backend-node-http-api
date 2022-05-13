@@ -7,7 +7,7 @@ class DomainError extends Error {
 
 class NotFoundError extends DomainError {
   constructor({ resourceName, resourceId }) {
-    super(`Resource ${resourceName} with identifier ${resourceId} not found`)
+    super(`Resource '${resourceName}' with identifier '${resourceId}' not found`)
     this.resourceName = resourceName
     this.resourceId = resourceId
   }
